@@ -1,16 +1,21 @@
 #!/usr/bin/node
+// Use  Star wars API to get
+
 const request = require('request');
-request(process.argv[2], function (error, response, body) {
-  if (!error) {
-    const todos = JSON.parse(body);
-    let completed = {};
-    todos.forEach((todo) => {
-      if (todo.completed && completed[todo.userId] === undefined) {
-        completed[todo.userId] = 1;
-      } else if (todo.completed) {
-        completed[todo.userId] += 1;
+
+function callback (error, response, body) {
+  if (error) throw error;
+  const users = {};
+  for (const user of JSON.parse(body)) {
+    if (user.completed) {
+      if (users[user.userId]) {
+        users[user.userId]++;
+      } else {
+        users[user.userId] = 1;
       }
-    });
-    console.log(completed);
+    }
   }
-});
+  console.log(users);
+}
+
+request(process.argv[2], callback);
